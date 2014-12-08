@@ -11,6 +11,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
  * @group Polymer Mixins
 -->
 
+<link rel="import" href="../polymer/polymer.html">
+
 <script>
 
 (function(scope) {
@@ -28,8 +30,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   when they are resized explicitly by a `CoreResizer`, or when the window has been resized.
   Note, the `core-resize` event is non-bubbling.
 
-  `CoreResizable`'s must manually call the `resizeableAttachedHandler` from the element's
-  `attached` callback and `resizeableDetachedHandler` from the element's `detached`
+  `CoreResizable`'s must manually call the `resizableAttachedHandler` from the element's
+  `attached` callback and `resizableDetachedHandler` from the element's `detached`
   callback.
 
     @element CoreResizable
@@ -42,9 +44,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     /**
      * User must call from `attached` callback
      *
-     * @method resizeableAttachedHandler
+     * @method resizableAttachedHandler
      */
-    resizeableAttachedHandler: function(cb) {
+    resizableAttachedHandler: function(cb) {
       cb = cb || this._notifyResizeSelf;
       this.async(function() {
         var detail = {callback: cb, hasParentResizer: false};
@@ -60,9 +62,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     /**
      * User must call from `detached` callback
      *
-     * @method resizeableDetachedHandler
+     * @method resizableDetachedHandler
      */
-    resizeableDetachedHandler: function() {
+    resizableDetachedHandler: function() {
       this.fire('core-request-resize-cancel', null, this, false);
       if (this._boundWindowResizeHandler) {
         window.removeEventListener(this._boundResizeHandler);
@@ -113,7 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * @method resizerAttachedHandler
      */
     resizerAttachedHandler: function() {
-      this.resizeableAttachedHandler(this.notifyResize);
+      this.resizableAttachedHandler(this.notifyResize);
       this._boundResizeRequested = this._boundResizeRequested || this._handleResizeRequested.bind(this);
       var target = this.resizerIsPeer ? this.parentElement : this;
       target.addEventListener('core-request-resize', this._boundResizeRequested);
@@ -125,7 +127,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * @method resizerDetachedHandler
      */
     resizerDetachedHandler: function() {
-      this.resizeableDetachedHandler();
+      this.resizableDetachedHandler();
       var target = this.resizerIsPeer ? this.parentElement : this;
       target.removeEventListener('core-request-resize', this._boundResizeRequested);
     },
