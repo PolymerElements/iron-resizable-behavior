@@ -179,15 +179,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     // Private: Handle requests for resize
     _handleResizeRequested: function(e) {
-      if (e.target == this) {
+      var target = e.path[0];
+      if (target == this) {
         return;
       }
-      // log('resize requested', e.target, this);
+      // log('resize requested', target, this);
       if (!this.resizeRequestors) {
         this.resizeRequestors = [];
       }
-      this.resizeRequestors.push({target: e.target, callback: e.detail.callback});
-      e.target.addEventListener('core-request-resize-cancel', this._cancelResizeRequested.bind(this));
+      this.resizeRequestors.push({target: target, callback: e.detail.callback});
+      target.addEventListener('core-request-resize-cancel', this._cancelResizeRequested.bind(this));
       e.detail.hasParentResizer = true;
       e.stopPropagation();
     },
