@@ -14,77 +14,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../webcomponentsjs/webcomponents.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <link rel="import" href="../core-resizable.html">
-  <style>
-  </style>
+  <link rel="import" href="test-elements.html">
 </head>
 <body fit>
 
-<polymer-element name="core-resizer-parent">
-  <script>
-    Polymer(Polymer.mixin({
-      eventDelegates: {
-        'core-resize': 'resizeHandler'
-      },
-      attached: function() {
-        this.resizerAttachedHandler();
-      },
-      detached: function() {
-        this.resizerDetachedHandler();
-      }
-    }, Polymer.CoreResizer));
-  </script>
-</polymer-element>
+<!-- 
 
-<polymer-element name="core-resizer-parent-filtered" extends="core-resizer-parent">
-  <script>
-    Polymer({
-      active: null,
-      resizerShouldNotify: function(el) {
-        return (el == this.active);
-      }
-    });
-  </script>
-</polymer-element>
+Notes on Polyfill compatibility in tests:
+- Test elements loaded via imports, to ensure load order correctness
+  w.r.t. Polymer.mixin being availbale
+- Resize notifications and asserts are done asynchronously, since
+  there are timing differences w.r.t. when detached callbacks occur
 
-<polymer-element name="core-resizer-peer" extends="core-resizer-parent">
-  <script>
-    Polymer({
-      resizerIsPeer: true     
-    });
-  </script>
-</polymer-element>
-
-<polymer-element name="core-resizer-peer-filtered" extends="core-resizer-parent-filtered">
-  <script>
-    Polymer({
-      resizerIsPeer: true     
-    });
-  </script>
-</polymer-element>
-
-<polymer-element name="core-resizable">
-  <script>
-    Polymer(Polymer.mixin({
-      eventDelegates: {
-        'core-resize': 'resizeHandler'
-      },
-      attached: function() {
-        this.resizableAttachedHandler();
-      },
-      detached: function() {
-        this.resizableDetachedHandler();
-      }
-    }, Polymer.CoreResizable));
-  </script>
-</polymer-element>
-
-<polymer-element name="core-resizable-in-shadow" noscript>
-  <template>
-    <div>
-      <core-resizable id="resizable"></core-resizable>
-    </div>
-  </template>
-</polymer-element>
+-->
 
 <polymer-element name='test-element' noscript>
   <template>
@@ -188,29 +130,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     suite('core-resizer-parent', function() {
 
-      test('notify resizables from window', function() {
+      test('notify resizables from window', function(done) {
         registerResizeHandler(testEl.$.parent);
         registerResizeHandler(testEl.$.child1a);
         registerResizeHandler(testEl.$.child1b);
         registerResizeHandler(testEl.$.shadow1c.$.resizable);
         registerResizeHandler(testEl.$.shadow1d.$.resizable);
-        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('notify resizables from parent', function() {
+      test('notify resizables from parent', function(done) {
         registerResizeHandler(testEl.$.parent);
         registerResizeHandler(testEl.$.child1a);
         registerResizeHandler(testEl.$.child1b);
         registerResizeHandler(testEl.$.shadow1c.$.resizable);
         registerResizeHandler(testEl.$.shadow1d.$.resizable);
-        testEl.$.parent.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.parent.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('detach resizables then notify parent', function() {
+      test('detach resizables then notify parent', function(done) {
         registerResizeHandler(testEl.$.parent);
         registerResizeHandler(testEl.$.child1a, false);
         registerResizeHandler(testEl.$.child1b);
@@ -218,52 +166,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         registerResizeHandler(testEl.$.shadow1d.$.resizable);
         testEl.$.child1a.remove();
         testEl.$.shadow1c.remove();
-        testEl.$.parent.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.parent.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('detach parent then notify window', function() {
+      test('detach parent then notify window', function(done) {
         registerResizeHandler(testEl.$.parent, false);
         registerResizeHandler(testEl.$.child1a, false);
         registerResizeHandler(testEl.$.child1b, false);
         registerResizeHandler(testEl.$.shadow1c.$.resizable, false);
         registerResizeHandler(testEl.$.shadow1d.$.resizable, false);
         testEl.$.parent.remove();
-        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
     });
 
     suite('core-resizer-parent-filtered', function() {
 
-      test('notify resizables from window', function() {
+      test('notify resizables from window', function(done) {
         registerResizeHandler(testEl.$.parentFiltered);
         registerResizeHandler(testEl.$.child2a);
         registerResizeHandler(testEl.$.child2b, false);
         registerResizeHandler(testEl.$.shadow2c.$.resizable, false);
         registerResizeHandler(testEl.$.shadow2d.$.resizable, false);
         testEl.$.parentFiltered.active = testEl.$.child2a;
-        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('notify resizables from parent', function() {
+      test('notify resizables from parent', function(done) {
         registerResizeHandler(testEl.$.parentFiltered);
         registerResizeHandler(testEl.$.child2a);
         registerResizeHandler(testEl.$.child2b, false);
         registerResizeHandler(testEl.$.shadow2c.$.resizable, false);
         registerResizeHandler(testEl.$.shadow2d.$.resizable, false);
         testEl.$.parentFiltered.active = testEl.$.child2a;
-        testEl.$.parentFiltered.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.parentFiltered.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('detach resizables then notify parent', function() {
+      test('detach resizables then notify parent', function(done) {
         registerResizeHandler(testEl.$.parentFiltered);
         registerResizeHandler(testEl.$.child2a, false);
         registerResizeHandler(testEl.$.child2b, false);
@@ -272,12 +232,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         testEl.$.child2a.remove();
         testEl.$.shadow2c.remove();
         testEl.$.parentFiltered.active = testEl.$.shadow2d.$.resizable;
-        testEl.$.parentFiltered.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.parentFiltered.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('detach parent then notify window', function() {
+      test('detach parent then notify window', function(done) {
         registerResizeHandler(testEl.$.parentFiltered, false);
         registerResizeHandler(testEl.$.child2a, false);
         registerResizeHandler(testEl.$.child2b, false);
@@ -285,38 +248,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         registerResizeHandler(testEl.$.shadow2d.$.resizable, false);
         testEl.$.parentFiltered.remove();
         testEl.$.parentFiltered.active = testEl.$.shadow2d.$.resizable;
-        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
     });
 
     suite('core-resizer-peer', function() {
 
-      test('notify resizables from window', function() {
+      test('notify resizables from window', function(done) {
         registerResizeHandler(testEl.$.peer);
         registerResizeHandler(testEl.$.child3a);
         registerResizeHandler(testEl.$.child3b);
         registerResizeHandler(testEl.$.shadow3c.$.resizable);
         registerResizeHandler(testEl.$.shadow3d.$.resizable);
-        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('notify resizables from peer', function() {
+      test('notify resizables from peer', function(done) {
         registerResizeHandler(testEl.$.peer);
         registerResizeHandler(testEl.$.child3a);
         registerResizeHandler(testEl.$.child3b);
         registerResizeHandler(testEl.$.shadow3c.$.resizable);
         registerResizeHandler(testEl.$.shadow3d.$.resizable);
-        testEl.$.peer.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.peer.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('detach resizables then notify', function() {
+      test('detach resizables then notify', function(done) {
         registerResizeHandler(testEl.$.peer);
         registerResizeHandler(testEl.$.child3a, false);
         registerResizeHandler(testEl.$.child3b);
@@ -324,52 +296,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         registerResizeHandler(testEl.$.shadow3d.$.resizable);
         testEl.$.child3a.remove();
         testEl.$.shadow3c.remove();
-        testEl.$.peer.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.peer.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('detach peer then notify', function() {
+      test('detach peer then notify', function(done) {
         registerResizeHandler(testEl.$.peer);
         registerResizeHandler(testEl.$.child3a, false);
         registerResizeHandler(testEl.$.child3b);
         registerResizeHandler(testEl.$.shadow3c.$.resizable, false);
         registerResizeHandler(testEl.$.shadow3d.$.resizable);
         testEl.$.peer.remove();
-        testEl.$.peer.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.peer.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
     });
 
-    suite('core-resizer-peer-filtered', function() {
+    suite('core-resizer-peer-filtered', function(done) {
 
-      test('notify resizables from window', function() {
+      test('notify resizables from window', function(done) {
         registerResizeHandler(testEl.$.peerFiltered);
         registerResizeHandler(testEl.$.child4a);
         registerResizeHandler(testEl.$.child4b, false);
         registerResizeHandler(testEl.$.shadow4c.$.resizable, false);
         registerResizeHandler(testEl.$.shadow4d.$.resizable, false);
         testEl.$.peerFiltered.active = testEl.$.child4a;
-        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('notify resizables from peer', function() {
+      test('notify resizables from peer', function(done) {
         registerResizeHandler(testEl.$.peerFiltered);
         registerResizeHandler(testEl.$.child4a);
         registerResizeHandler(testEl.$.child4b, false);
         registerResizeHandler(testEl.$.shadow4c.$.resizable, false);
         registerResizeHandler(testEl.$.shadow4d.$.resizable, false);
         testEl.$.peerFiltered.active = testEl.$.child4a;
-        testEl.$.peerFiltered.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.peerFiltered.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('detach resizables then notify parent', function() {
+      test('detach resizables then notify parent', function(done) {
         registerResizeHandler(testEl.$.peerFiltered);
         registerResizeHandler(testEl.$.child4a, false);
         registerResizeHandler(testEl.$.child4b, false);
@@ -378,12 +362,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         testEl.$.child4a.remove();
         testEl.$.shadow4c.remove();
         testEl.$.peerFiltered.active = testEl.$.shadow4d.$.resizable;
-        testEl.$.peerFiltered.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.peerFiltered.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('detach peer then notify window', function() {
+      test('detach peer then notify window', function(done) {
         registerResizeHandler(testEl.$.peerFiltered, false);
         registerResizeHandler(testEl.$.child4a, false);
         registerResizeHandler(testEl.$.child4b, false);
@@ -391,74 +378,92 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         registerResizeHandler(testEl.$.shadow4d.$.resizable, false);
         testEl.$.peerFiltered.remove();
         testEl.$.peerFiltered.active = testEl.$.shadow4d.$.resizable;
-        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
     });
 
     suite('core-resizer-nested', function() {
 
-      test('notify resizables from window', function() {
+      test('notify resizables from window', function(done) {
         registerResizeHandler(testEl.$.parentTop);
         registerResizeHandler(testEl.$.parentNested);
         registerResizeHandler(testEl.$.peerNested);
         registerResizeHandler(testEl.$.child5a);
         registerResizeHandler(testEl.$.shadow5b.$.resizable);
-        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('notify resizables from top parent', function() {
+      test('notify resizables from top parent', function(done) {
         registerResizeHandler(testEl.$.parentTop);
         registerResizeHandler(testEl.$.parentNested);
         registerResizeHandler(testEl.$.peerNested);
         registerResizeHandler(testEl.$.child5a);
         registerResizeHandler(testEl.$.shadow5b.$.resizable);
-        testEl.$.parentTop.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.parentTop.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('notify resizables from nested parent', function() {
+      test('notify resizables from nested parent', function(done) {
         registerResizeHandler(testEl.$.parentTop, false);
         registerResizeHandler(testEl.$.parentNested);
         registerResizeHandler(testEl.$.peerNested);
         registerResizeHandler(testEl.$.child5a);
         registerResizeHandler(testEl.$.shadow5b.$.resizable);
-        testEl.$.parentNested.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.parentNested.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('notify resizables from nested peer', function() {
+      test('notify resizables from nested peer', function(done) {
         registerResizeHandler(testEl.$.parentTop, false);
         registerResizeHandler(testEl.$.parentNested, false);
         registerResizeHandler(testEl.$.peerNested);
         registerResizeHandler(testEl.$.child5a);
         registerResizeHandler(testEl.$.shadow5b.$.resizable);
-        testEl.$.peerNested.notifyResize();
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          testEl.$.peerNested.notifyResize();
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
       // Known limitation: peers of detached `resizerIsPeer` won't be notified
       // by parent resizers; ROI on that bookkeeping not considered high enough
-      test('detach peer then notify', function() {
+      test('detach peer then notify', function(done) {
         registerResizeHandler(testEl.$.parentTop);
         registerResizeHandler(testEl.$.parentNested);
         registerResizeHandler(testEl.$.peerNested, false);
         registerResizeHandler(testEl.$.child5a, false);
         registerResizeHandler(testEl.$.shadow5b.$.resizable, false);
         testEl.$.peerNested.remove();
-        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('detach resizables then notify', function() {
+      test('detach resizables then notify', function(done) {
         registerResizeHandler(testEl.$.parentTop);
         registerResizeHandler(testEl.$.parentNested);
         registerResizeHandler(testEl.$.peerNested, false); // removed in above test
@@ -466,21 +471,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         registerResizeHandler(testEl.$.shadow5b.$.resizable, false);
         testEl.$.child5a.remove();
         testEl.$.shadow5b.remove();
-        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
-      test('detach top parent then notify', function() {
+      test('detach top parent then notify', function(done) {
         registerResizeHandler(testEl.$.parentTop, false);
         registerResizeHandler(testEl.$.parentNested, false);
         registerResizeHandler(testEl.$.peerNested, false);
         registerResizeHandler(testEl.$.child5a, false);
         registerResizeHandler(testEl.$.shadow5b.$.resizable, false);
         testEl.$.parentTop.remove();
-        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-        assert(notifyPending.length === 0, 'all resizables were not notified');
-        unregisterResizeHandlers();
+        setTimeout(function() {
+          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+          assert(notifyPending.length === 0, 'all resizables were not notified');
+          unregisterResizeHandlers();
+          done();
+        });
       });
 
     });
