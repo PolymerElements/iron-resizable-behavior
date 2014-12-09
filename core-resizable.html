@@ -67,7 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     resizableDetachedHandler: function() {
       this.fire('core-request-resize-cancel', null, this, false);
       if (this._boundWindowResizeHandler) {
-        window.removeEventListener(this._boundResizeHandler);
+        window.removeEventListener('resize', this._boundWindowResizeHandler);
       }
     },
 
@@ -117,8 +117,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     resizerAttachedHandler: function() {
       this.resizableAttachedHandler(this.notifyResize);
       this._boundResizeRequested = this._boundResizeRequested || this._handleResizeRequested.bind(this);
-      var target = this.resizerIsPeer ? this.parentElement : this;
-      target.addEventListener('core-request-resize', this._boundResizeRequested);
+      var listener;
+      if (this.resizerIsPeer) {
+        listener = this.parentElement || (this.parentNode && this.parentNode.host);
+        listener._resizerPeers = listener._resizerPeers || [];
+        listener._resizerPeers.push(this);
+      } else {
+        listener = this;
+      }
+      listener.addEventListener('core-request-resize', this._boundResizeRequested);
+      this._resizerListener = listener;
     },
 
     /**
@@ -128,8 +136,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      */
     resizerDetachedHandler: function() {
       this.resizableDetachedHandler();
-      var target = this.resizerIsPeer ? this.parentElement : this;
-      target.removeEventListener('core-request-resize', this._boundResizeRequested);
+      this._resizerListener.removeEventListener('core-request-resize', this._boundResizeRequested);
     },
 
     /**
@@ -182,7 +189,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     // Private: Handle requests for resize
     _handleResizeRequested: function(e) {
       var target = e.path[0];
-      if (target == this) {
+      if ((target == this) || 
+          (target == this._resizerListener) || 
+          (this._resizerPeers && this._resizerPeers.indexOf(target) < 0)) {
         return;
       }
       // log('resize requested', target, this);
@@ -211,13 +220,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   }, Polymer.CoreResizable);
 
+  // function prettyName(el) {
+  //   return el.localName + (el.id ? '#' : '') + el.id;
+  // }
+
   // function log(what, from, to, group) {
   //   var args = [what];
   //   if (from) {
-  //     args.push('from ' + from.localName + (from.id ? '#' : '') + from.id);
+  //     args.push('from ' + prettyName(from));
   //   }
   //   if (to) {
-  //     args.push('to ' + to.localName + (to.id ? '#' : '') + to.id);
+  //     args.push('to ' + prettyName(to));
   //   }
   //   if (group) {
   //     console.group.apply(console, args);
