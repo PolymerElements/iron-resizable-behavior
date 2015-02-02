@@ -59,7 +59,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * @method resizableDetached
        */
       resizableDetached: function() {
-        console.log('fire core-request-resize-cancel')
         this.fire('core-request-resize-cancel', null, this, false);
         if (this._boundWindowResizeHandler) {
           window.removeEventListener('resize', this._boundWindowResizeHandler);
@@ -170,7 +169,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * @method resizeerShouldNotify
        * @param {Element} el
        */
-       // resizeerShouldNotify: function(el) { }  // User to implement if needed
+      // resizeerShouldNotify: function(el) { }  // User to implement if needed
 
       /**
        * Set to `true` if the resizer is actually a peer to the elements it
