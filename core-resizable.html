@@ -183,7 +183,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       // Private: Handle requests for resize
       _handleResizeRequested: function(e) {
-        var target = e.target;
+        var target = e.path ? e.path[0] : e.target;
         if ((target == this) ||
             (target == this._resizerListener) ||
             (this._resizerPeers && this._resizerPeers.indexOf(target) < 0)) {
