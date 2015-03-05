@@ -42,9 +42,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       'core-resize': 'resizeAction'
     },
 
-    ready: function() {
-    },
-
     attached: function() {
       this.resizeAction();
       this.resizableAttached();
@@ -66,6 +63,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="x-app">
 
+  <style>
+
+    x-app {
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+  </style>
+
   <template>
 
     <x-puck></x-puck>
@@ -79,8 +89,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   Polymer({
 
     is: 'x-app',
-
-    hostAttributes: 'fit block',
 
     mixins: [
       'core-resizer'
