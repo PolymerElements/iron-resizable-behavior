@@ -110,6 +110,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     },
 
+    // TODO(cdata): Currently behaviors cannot define "abstract" methods.
+    // resizerShouldNotify: function(el) { return true; },
+
     _parentResizableChanged: function(parentResizable) {
       if (parentResizable) {
         window.removeEventListener('resize', this._boundNotifyResize);
