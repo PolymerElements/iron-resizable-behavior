@@ -1,6 +1,6 @@
 {
   "name": "iron-resizable-behavior",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Coordinates the flow of resizeable elements",
   "private": true,
   "main": "iron-resizable-behavior.html",
