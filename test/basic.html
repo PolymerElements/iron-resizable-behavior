@@ -105,6 +105,7 @@ Notes on Polyfill compatibility in tests:
           ListenForResize(testEl.$.shadow1c.$.resizable),
           ListenForResize(testEl.$.shadow1d.$.resizable)
         ];
+
         testEl.$.parent.notifyResize();
         expect(pendingNotifications).to.be.eql(0);
         RemoveListeners(listeners);
@@ -116,8 +117,13 @@ Notes on Polyfill compatibility in tests:
         sinon.spy(testEl.$.child1b, 'notifyResize');
         sinon.spy(testEl.$.shadow1d.$.resizable, 'notifyResize');
 
-        testEl.$.child1a.remove();
-        testEl.$.shadow1c.$.resizable.remove();
+        var firstElementToRemove = testEl.$.child1a;
+        var firstElementParent = Polymer.dom(firstElementToRemove).parentNode;
+        var secondElementToRemove = testEl.$.shadow1c.$.resizable;
+        var secondElementParent = Polymer.dom(secondElementToRemove).parentNode;
+
+        Polymer.dom(firstElementParent).removeChild(firstElementToRemove);
+        Polymer.dom(secondElementParent).removeChild(secondElementToRemove);
 
         Polymer.dom.flush();
 
@@ -158,7 +164,7 @@ Notes on Polyfill compatibility in tests:
 
     suite('x-resizer-parent-filtered', function() {
 
-      test('notify resizables from window', function(done) {
+      test('notify resizables from window', function() {
         var listeners = [
           ListenForResize(testEl.$.parentFiltered),
           ListenForResize(testEl.$.child2a),
@@ -169,13 +175,12 @@ Notes on Polyfill compatibility in tests:
 
         testEl.$.parentFiltered.active = testEl.$.child2a;
 
-          window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
-          expect(pendingNotifications).to.be.eql(0);
-          RemoveListeners(listeners);
-          done();
+        window.dispatchEvent(new CustomEvent('resize', { bubbles: false }));
+        expect(pendingNotifications).to.be.eql(0);
+        RemoveListeners(listeners);
       });
 
-      test('notify resizables from parent', function(done) {
+      test('notify resizables from parent', function() {
         var listeners = [
           ListenForResize(testEl.$.parentFiltered),
           ListenForResize(testEl.$.child2a),
@@ -189,10 +194,9 @@ Notes on Polyfill compatibility in tests:
         testEl.$.parentFiltered.notifyResize();
         expect(pendingNotifications).to.be.eql(0);
         RemoveListeners(listeners);
-        done();
       });
 
-      test('detach resizables then notify parent', function(done) {
+      test('detach resizables then notify parent', function() {
         var listeners = [
           ListenForResize(testEl.$.parentFiltered),
           ListenForResize(testEl.$.child2a, false),
@@ -211,7 +215,6 @@ Notes on Polyfill compatibility in tests:
         testEl.$.parentFiltered.notifyResize();
         expect(pendingNotifications).to.be.eql(0);
         RemoveListeners(listeners);
-        done();
       });
     });
   });
