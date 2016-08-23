@@ -1,6 +1,6 @@
 {
   "name": "iron-resizable-behavior",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "license": "http://polymer.github.io/LICENSE.txt",
   "description": "Coordinates the flow of resizeable elements",
   "private": true,
@@ -19,13 +19,18 @@
     "url": "git://github.com/PolymerElements/iron-resizable-behavior.git"
   },
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.1.0"
+    "polymer": "https://github.com/PolymerLabs/alacarte.git#master"
   },
   "devDependencies": {
-    "iron-component-page": "polymerelements/iron-component-page#^1.0.0",
-    "test-fixture": "polymerelements/test-fixture#^1.0.0",
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "test-fixture": "PolymerElements/test-fixture#ce-v1",
     "web-component-tester": "^4.0.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#v1-polymer-edits"
+  },
+  "resolutions": {
+    "polymer": "master",
+    "test-fixture": "ce-v1",
+    "webcomponentsjs": "v1-polymer-edits"
   },
   "ignore": []
 }
