@@ -19,18 +19,18 @@
     "url": "git://github.com/PolymerElements/iron-resizable-behavior.git"
   },
   "dependencies": {
-    "polymer": "https://github.com/PolymerLabs/alacarte.git#master"
+    "polymer": "Polymer/polymer#2.0-preview"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
     "test-fixture": "PolymerElements/test-fixture#custom-elements-v1",
     "web-component-tester": "^4.0.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#v1-polymer-edits"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
   },
   "resolutions": {
-    "polymer": "master",
+    "polymer": "2.0-preview",
     "test-fixture": "custom-elements-v1",
-    "webcomponentsjs": "v1-polymer-edits"
+    "webcomponentsjs": "v1"
   },
   "ignore": []
 }
