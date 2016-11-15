@@ -31,14 +31,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
     suite('imports order', function() {
-      setup(function(done) {
-        window.requestAnimationFrame(function() {
-          setTimeout(function() {
-            done();
-          });
-        });
-      });
-      
       test('resizable children and parent updated', function() {
         var parent = document.querySelector('x-resizer-parent');
         var child = parent.firstElementChild;
