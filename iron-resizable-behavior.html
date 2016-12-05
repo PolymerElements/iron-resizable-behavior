@@ -149,7 +149,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // NOTE(cdata): In ShadowDOM, event retargetting makes echoing of the
       // otherwise non-bubbling event "just work." We do it manually here for
       // the case where Polymer is not using shadow roots for whatever reason:
-      if (!Polymer.Settings.useShadow) {
+      // TODO(valdrin) remove ShadyDOM check after polymer/polymer#4198 is fixed.
+      if (!Polymer.Settings.useShadow || (window.ShadyDOM && window.ShadyDOM.inUse)) {
         this._fireResize();
       }
     },
