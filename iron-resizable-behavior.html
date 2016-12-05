@@ -163,12 +163,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _onIronRequestResizeNotifications: function(event) {
-      var target = event.path ? event.path[0] : event.target;
-
+      var target = Polymer.dom(event).rootTarget;
       if (target === this) {
         return;
       }
-
       if (this._interestedResizables.indexOf(target) === -1) {
         this._interestedResizables.push(target);
         this.listen(target, 'iron-resize', '_onDescendantIronResize');
