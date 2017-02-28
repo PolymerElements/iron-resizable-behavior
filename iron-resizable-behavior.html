@@ -68,10 +68,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // of the `_interestedResizables`. To solve this, we wait for the document
       // to be done loading before firing the event.
       if (document.readyState === 'loading') {
-        document.addEventListener('readystatechange', function readystatechanged(){
+        var _this = this;
+        document.addEventListener('readystatechange', function readystatechanged() {
           document.removeEventListener('readystatechange', readystatechanged);
-          this.isAttached && this.attached();
-        }.bind(this));
+          _this.isAttached && _this.attached();
+        });
         return;
       }
       this.fire('iron-request-resize-notifications', null, {
