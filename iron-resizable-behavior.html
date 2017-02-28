@@ -79,6 +79,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         bubbles: true,
         cancelable: true
       });
+
       if (!this._parentResizable) {
         window.addEventListener('resize', this._boundNotifyResize);
         this.notifyResize();
@@ -154,8 +155,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // NOTE(cdata): In ShadowDOM, event retargetting makes echoing of the
       // otherwise non-bubbling event "just work." We do it manually here for
       // the case where Polymer is not using shadow roots for whatever reason:
-      // TODO(valdrin) remove ShadyDOM check after polymer/polymer#4198 is fixed.
-      if (!Polymer.Settings.useShadow || (window.ShadyDOM && window.ShadyDOM.inUse)) {
+      if (!Polymer.Settings.useShadow) {
         this._fireResize();
       }
     },
@@ -172,6 +172,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (target === this) {
         return;
       }
+
       if (this._interestedResizables.indexOf(target) === -1) {
         this._interestedResizables.push(target);
         this.listen(target, 'iron-resize', '_onDescendantIronResize');
