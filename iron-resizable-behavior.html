@@ -61,6 +61,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     attached: function() {
+      // NOTE(valdrin) In CustomElements v1 with native HTMLImports, the order
+      // of imports affects the order of `attached` callbacks (see webcomponents/custom-elements#15).
+      // This might cause a child to notify parents too early (as the parent
+      // still has to be upgraded), resulting in a parent not able to keep track
+      // of the `_interestedResizables`. To solve this, we wait for the document
+      // to be done loading before firing the event.
+      if (document.readyState === 'loading') {
+        var _this = this;
+        document.addEventListener('readystatechange', function readystatechanged() {
+          document.removeEventListener('readystatechange', readystatechanged);
+          _this.isAttached && _this.attached();
+        });
+        return;
+      }
       this.fire('iron-request-resize-notifications', null, {
         node: this,
         bubbles: true,
@@ -155,8 +169,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _onIronRequestResizeNotifications: function(event) {
-      var target = event.path ? event.path[0] : event.target;
-
+      var target = Polymer.dom(event).rootTarget;
       if (target === this) {
         return;
       }
@@ -192,4 +205,3 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
   };
 </script>
-
