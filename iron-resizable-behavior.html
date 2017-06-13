@@ -146,7 +146,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _onIronRequestResizeNotifications: function(event) {
-      var target = Polymer.dom(event).rootTarget;
+      var target = /** @type {!EventTarget} */ (Polymer.dom(event).rootTarget);
       if (target === this) {
         return;
       }
