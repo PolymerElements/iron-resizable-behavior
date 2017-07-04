@@ -130,12 +130,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return;
       }
 
-      // NOTE(cdata): In ShadowDOM, event retargeting makes echoing of the
-      // otherwise non-bubbling event "just work." We do it manually here for
-      // the case where Polymer is not using shadow roots for whatever reason:
-      if (!Polymer.Settings.useShadow) {
-        this._fireResize();
+      // NOTE(cdata): "Don't need to trigger event manually in case of ShadowDOM is used and
+      // event is coming from local DOM because of event retargeting. Otherwise, we need to trigger it manually".
+      if (Polymer.Settings.useShadow && event.target.domHost === this) {
+        return;
       }
+      
+      this._fireResize();
     },
 
     _fireResize: function() {
