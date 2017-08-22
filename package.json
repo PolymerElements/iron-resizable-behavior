@@ -1,0 +1,25 @@
+{
+  "name": "@polymer/iron-resizable-behavior",
+  "flat": true,
+  "version": "3.0.0-pre.1",
+  "description": "Coordinates the flow of resizeable elements",
+  "contributors": [
+    "The Polymer Authors"
+  ],
+  "keywords": [
+    "web-components",
+    "polymer",
+    "iron",
+    "behavior"
+  ],
+  "main": "iron-resizable-behavior.html",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PolymerElements/iron-resizable-behavior.git"
+  },
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0-pre.1"
+  },
+  "devDependencies": {}
+}
