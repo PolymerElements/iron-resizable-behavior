@@ -39,27 +39,27 @@ declare namespace Polymer {
      * resize.
      */
     _notifyingDescendant: boolean|null|undefined;
-    created(): any;
-    attached(): any;
-    detached(): any;
+    created(): void;
+    attached(): void;
+    detached(): void;
 
     /**
      * Can be called to manually notify a resizable and its descendant
      * resizables of a resize change.
      */
-    notifyResize(): any;
+    notifyResize(): void;
 
     /**
      * Used to assign the closest resizable ancestor to this resizable
      * if the ancestor detects a request for notifications.
      */
-    assignParentResizable(parentResizable: any): any;
+    assignParentResizable(parentResizable: any): void;
 
     /**
      * Used to remove a resizable descendant from the list of descendants
      * that should be notified of a resize change.
      */
-    stopResizeNotificationsFor(target: any): any;
+    stopResizeNotificationsFor(target: any): void;
 
     /**
      * This method can be overridden to filter nested elements that should or
@@ -71,12 +71,12 @@ declare namespace Polymer {
      * @returns True if the `element` should be notified of resize.
      */
     resizerShouldNotify(element: HTMLElement|null): boolean;
-    _onDescendantIronResize(event: any): any;
-    _fireResize(): any;
-    _onIronRequestResizeNotifications(event: any): any;
-    _parentResizableChanged(parentResizable: any): any;
-    _notifyDescendant(descendant: any): any;
-    _requestResizeNotifications(): any;
+    _onDescendantIronResize(event: any): void;
+    _fireResize(): void;
+    _onIronRequestResizeNotifications(event: any): void;
+    _parentResizableChanged(parentResizable: any): void;
+    _notifyDescendant(descendant: any): void;
+    _requestResizeNotifications(): void;
   }
 
   const IronResizableBehavior: object;
