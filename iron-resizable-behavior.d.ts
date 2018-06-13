@@ -77,6 +77,7 @@ declare namespace Polymer {
     _parentResizableChanged(parentResizable: any): void;
     _notifyDescendant(descendant: any): void;
     _requestResizeNotifications(): void;
+    _findParent(): void;
   }
 
   const IronResizableBehavior: object;
