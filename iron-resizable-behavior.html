@@ -30,6 +30,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
    * @demo demo/index.html
    **/
   Polymer.IronResizableBehavior = {
+    __orphans: new Set(),
+
     properties: {
       /**
        * The closest ancestor element that implements `IronResizableBehavior`.
@@ -194,15 +196,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               _requestResizeNotifications();
             });
       } else {
-        this.fire(
-            'iron-request-resize-notifications',
-            null,
-            {node: this, bubbles: true, cancelable: true});
+        this._findParent();
 
         if (!this._parentResizable) {
-          window.addEventListener('resize', this._boundNotifyResize);
-          this.notifyResize();
+          for (const orphan of this.__orphans) {
+            if (orphan !== this) {
+              orphan._findParent();
+            }
+          }
+        } else {
+          for (const resizable of this._parentResizable._interestedResizables) {
+            resizable._findParent();
+          }
         }
+      }
+    },
+
+    _findParent: function() {
+      this.assignParentResizable(undefined);
+      this.fire(
+          'iron-request-resize-notifications',
+          null,
+          {node: this, bubbles: true, cancelable: true});
+
+      if (!this._parentResizable) {
+        this.__orphans.add(this);
+
+        window.addEventListener('resize', this._boundNotifyResize);
+        this.notifyResize();
+      } else {
+        this.__orphans.delete(this);
       }
     }
   };
