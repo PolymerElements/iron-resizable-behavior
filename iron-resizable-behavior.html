@@ -64,6 +64,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this._parentResizable) {
         this._parentResizable.stopResizeNotificationsFor(this);
       } else {
+        this.__orphans.delete(this);
         window.removeEventListener('resize', this._boundNotifyResize);
       }
 
@@ -199,14 +200,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this._findParent();
 
         if (!this._parentResizable) {
+          // If this resizable is an orphan, tell other orphans to try to find
+          // their parent again, in case it's this resizable.
           for (const orphan of this.__orphans) {
             if (orphan !== this) {
               orphan._findParent();
             }
           }
         } else {
+          // If this resizable has a parent, tell other child resizables of
+          // that parent to try finding their parent again, in case it's this
+          // resizable.
           for (const resizable of this._parentResizable._interestedResizables) {
-            resizable._findParent();
+            if (resizable !== this) {
+              resizable._findParent();
+            }
           }
         }
       }
