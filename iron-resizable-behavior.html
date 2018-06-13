@@ -11,6 +11,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 
 <script>
+  (function() {
+
+  // Contains all connected resizables that do not have a parent.
+  const ORPHANS = new Set();
+
   /**
    * `IronResizableBehavior` is a behavior that can be used in Polymer elements to
    * coordinate the flow of resize events between "resizers" (elements that
@@ -30,8 +35,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
    * @demo demo/index.html
    **/
   Polymer.IronResizableBehavior = {
-    __orphans: new Set(),
-
     properties: {
       /**
        * The closest ancestor element that implements `IronResizableBehavior`.
@@ -64,7 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this._parentResizable) {
         this._parentResizable.stopResizeNotificationsFor(this);
       } else {
-        this.__orphans.delete(this);
+        ORPHANS.delete(this);
         window.removeEventListener('resize', this._boundNotifyResize);
       }
 
@@ -202,7 +205,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (!this._parentResizable) {
           // If this resizable is an orphan, tell other orphans to try to find
           // their parent again, in case it's this resizable.
-          for (const orphan of this.__orphans) {
+          for (const orphan of ORPHANS) {
             if (orphan !== this) {
               orphan._findParent();
             }
@@ -228,13 +231,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           {node: this, bubbles: true, cancelable: true});
 
       if (!this._parentResizable) {
-        this.__orphans.add(this);
+        ORPHANS.add(this);
 
         window.addEventListener('resize', this._boundNotifyResize);
         this.notifyResize();
       } else {
-        this.__orphans.delete(this);
+        ORPHANS.delete(this);
       }
     }
   };
+  })();
 </script>
