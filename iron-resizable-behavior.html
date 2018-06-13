@@ -210,6 +210,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               orphan._findParent();
             }
           }
+
+          window.addEventListener('resize', this._boundNotifyResize);
+          this.notifyResize();
         } else {
           // If this resizable has a parent, tell other child resizables of
           // that parent to try finding their parent again, in case it's this
@@ -232,9 +235,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       if (!this._parentResizable) {
         ORPHANS.add(this);
-
-        window.addEventListener('resize', this._boundNotifyResize);
-        this.notifyResize();
       } else {
         ORPHANS.delete(this);
       }
