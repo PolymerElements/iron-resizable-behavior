@@ -97,7 +97,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      * if the ancestor detects a request for notifications.
      */
     assignParentResizable: function(parentResizable) {
+      if (this._parentResizable) {
+        this._parentResizable.stopResizeNotificationsFor(this);
+      }
+
       this._parentResizable = parentResizable;
+
+      if (parentResizable &&
+          parentResizable._interestedResizables.indexOf(this) === -1) {
+        parentResizable._interestedResizables.push(this);
+        parentResizable.listen(this, 'iron-resize', '_onDescendantIronResize');
+      }
     },
 
     /**
@@ -148,11 +158,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var target = /** @type {!EventTarget} */ (Polymer.dom(event).rootTarget);
       if (target === this) {
         return;
-      }
-
-      if (this._interestedResizables.indexOf(target) === -1) {
-        this._interestedResizables.push(target);
-        this.listen(target, 'iron-resize', '_onDescendantIronResize');
       }
 
       target.assignParentResizable(this);
@@ -227,7 +232,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     _findParent: function() {
-      this.assignParentResizable(undefined);
+      this.assignParentResizable(null);
       this.fire(
           'iron-request-resize-notifications',
           null,
