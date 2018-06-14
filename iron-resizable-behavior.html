@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   (function() {
 
   // Contains all connected resizables that do not have a parent.
-  const ORPHANS = new Set();
+  var ORPHANS = new Set();
 
   /**
    * `IronResizableBehavior` is a behavior that can be used in Polymer elements to
@@ -210,11 +210,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (!this._parentResizable) {
           // If this resizable is an orphan, tell other orphans to try to find
           // their parent again, in case it's this resizable.
-          for (const orphan of ORPHANS) {
+          ORPHANS.forEach(function(orphan) {
             if (orphan !== this) {
               orphan._findParent();
             }
-          }
+          }, this);
 
           window.addEventListener('resize', this._boundNotifyResize);
           this.notifyResize();
@@ -222,11 +222,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // If this resizable has a parent, tell other child resizables of
           // that parent to try finding their parent again, in case it's this
           // resizable.
-          for (const resizable of this._parentResizable._interestedResizables) {
-            if (resizable !== this) {
-              resizable._findParent();
-            }
-          }
+          this._parentResizable._interestedResizables
+              .forEach(function(resizable) {
+                if (resizable !== this) {
+                  resizable._findParent();
+                }
+              }, this);
         }
       }
     },
