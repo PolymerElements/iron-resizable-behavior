@@ -11,11 +11,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 
 <script>
-  (function() {
-
-  // Contains all connected resizables that do not have a parent.
-  var ORPHANS = new Set();
-
   /**
    * `IronResizableBehavior` is a behavior that can be used in Polymer elements to
    * coordinate the flow of resize events between "resizers" (elements that
@@ -35,6 +30,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
    * @demo demo/index.html
    **/
   Polymer.IronResizableBehavior = {
+    /**
+     * Singleton cache. Contains all connected resizables that do not have a
+     * parent.
+     */
+    __cache: {},
+
     properties: {
       /**
        * The closest ancestor element that implements `IronResizableBehavior`.
@@ -53,6 +54,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     created: function() {
+      this.__cache = this.constructor.prototype.__cache;
+      if (!this.__cache.ORPHANS) {
+        this.__cache.ORPHANS = new Set();
+      }
+
       // We don't really need property effects on these, and also we want them
       // to be created before the `_parentResizable` observer fires:
       this._interestedResizables = [];
@@ -67,7 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (this._parentResizable) {
         this._parentResizable.stopResizeNotificationsFor(this);
       } else {
-        ORPHANS.delete(this);
+        this.__cache.ORPHANS.delete(this);
         window.removeEventListener('resize', this._boundNotifyResize);
       }
 
@@ -210,7 +216,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (!this._parentResizable) {
           // If this resizable is an orphan, tell other orphans to try to find
           // their parent again, in case it's this resizable.
-          ORPHANS.forEach(function(orphan) {
+          this.__cache.ORPHANS.forEach(function(orphan) {
             if (orphan !== this) {
               orphan._findParent();
             }
@@ -240,11 +246,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           {node: this, bubbles: true, cancelable: true});
 
       if (!this._parentResizable) {
-        ORPHANS.add(this);
+        this.__cache.ORPHANS.add(this);
       } else {
-        ORPHANS.delete(this);
+        this.__cache.ORPHANS.delete(this);
       }
     }
   };
-  })();
+
+  // Contains all connected resizables that do not have a parent.
+  Polymer.IronResizableBehavior.ORPHANS = new Set();
 </script>

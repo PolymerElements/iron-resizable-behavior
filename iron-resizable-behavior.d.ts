@@ -39,6 +39,13 @@ declare namespace Polymer {
      * resize.
      */
     _notifyingDescendant: boolean|null|undefined;
+
+    /**
+     * Singleton cache. Contains all connected resizables that do not have a
+     * parent.
+     *      
+     */
+    cache: object|null;
     created(): void;
     attached(): void;
     detached(): void;
