@@ -1,4 +1,4 @@
-<!--
+/**
 @license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
@@ -6,51 +6,37 @@ The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
 The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-<link rel="import" href="../iron-resizable-behavior.html">
-<link rel="import" href="x-resizer-parent.html">
-<link rel="import" href="x-resizable.html">
+*/
+import { IronResizableBehavior } from '../iron-resizable-behavior.js';
 
-<script>
-  Polymer({
+import './x-resizer-parent.js';
+import './x-resizable.js';
+import { Polymer as Polymer$0 } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+Polymer$0({
 
-    is: 'x-resizer-parent-filtered',
+  is: 'x-resizer-parent-filtered',
 
-    active: null,
+  active: null,
 
-    behaviors: [Polymer.IronResizableBehavior],
+  behaviors: [IronResizableBehavior],
 
-    resizerShouldNotify: function(el) {
-      return (el == this.active);
-    }
+  resizerShouldNotify: function(el) {
+    return (el == this.active);
+  }
 
-  });
-</script>
-
-<dom-module id="x-resizable-in-shadow">
-
-  <template>
-
+});
+Polymer$0({
+  _template: html`
     <div>
       <x-resizable id="resizable"></x-resizable>
     </div>
+`,
 
-  </template>
-
-</dom-module>
-
-<script>
-  Polymer({
-
-    is: 'x-resizable-in-shadow'
-
-  });
-</script>
-
-<dom-module id='test-element'>
-
-  <template>
-
+  is: 'x-resizable-in-shadow'
+});
+Polymer$0({
+  _template: html`
     <!-- Normal resizable parent with child resizables -->
     <x-resizer-parent id="parent">
       <x-resizable id="child1a"></x-resizable>
@@ -74,55 +60,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <x-resizable-in-shadow id="shadow2d"></x-resizable-in-shadow>
       </div>
     </x-resizer-parent-filtered>
+`,
 
-  </template>
+  is: 'test-element'
+});
 
-</dom-module>
+/** @polymerBehavior */
+export const ObserveIronResizeBehavior = {
+  properties: {ironResizeCount: {type: Number, value: 0}},
 
-<script>
-  Polymer({
+  listeners: {'iron-resize': '_incrementIronResizeCount'},
 
-    is: 'test-element'
+  _incrementIronResizeCount: function() {
+    this.ironResizeCount++;
+  }
+};
 
-  });
-</script>
-<script>
-  /** @polymerBehavior */
-  Polymer.ObserveIronResizeBehavior = {
-    properties: {ironResizeCount: {type: Number, value: 0}},
-
-    listeners: {'iron-resize': '_incrementIronResizeCount'},
-
-    _incrementIronResizeCount: function() {
-      this.ironResizeCount++;
-    }
-  };
-</script>
-<dom-module id="x-shadow-resizable">
-  <template>
+Polymer$0({
+  _template: html`
     <div></div>
-  </template>
-</dom-module>
-<script>
-  Polymer({
-    is: 'x-shadow-resizable',
+`,
 
-    behaviors:
-        [Polymer.IronResizableBehavior, Polymer.ObserveIronResizeBehavior]
-  });
-</script>
+  is: 'x-shadow-resizable',
 
-<dom-module id="x-light-resizable">
-  <template>
+  behaviors:
+      [IronResizableBehavior, ObserveIronResizeBehavior]
+});
+Polymer$0({
+  _template: html`
     <x-shadow-resizable id="childResizable1"></x-shadow-resizable>
     <x-shadow-resizable id="childResizable2"></x-shadow-resizable>
-  </template>
-</dom-module>
-<script>
-  Polymer({
-    is: 'x-light-resizable',
+`,
 
-    behaviors:
-        [Polymer.IronResizableBehavior, Polymer.ObserveIronResizeBehavior]
-  });
-</script>
+  is: 'x-light-resizable',
+
+  behaviors:
+      [IronResizableBehavior, ObserveIronResizeBehavior]
+});

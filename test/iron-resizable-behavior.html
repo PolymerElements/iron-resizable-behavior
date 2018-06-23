@@ -15,11 +15,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <title>iron-resizable-behavior tests</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
 
-  <link rel="import" href="../iron-resizable-behavior.html">
-  <link rel="import" href="test-elements.html">
+  <script type="module" src="../iron-resizable-behavior.js"></script>
+  <script type="module" src="./test-elements.js"></script>
 
 </head>
 <body>
@@ -30,86 +30,89 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
   </test-fixture>
 
-  <script>
-    suite('iron-resizable-behavior', function() {
-      var resizable;
+  <script type="module">
+import '../iron-resizable-behavior.js';
+import './test-elements.js';
+import { flush } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+suite('iron-resizable-behavior', function() {
+  var resizable;
 
-      suite('events across shadow boundaries', function() {
-        setup(function() {
-          resizable = fixture('ResizableAndShadowBoundaries');
-        });
+  suite('events across shadow boundaries', function() {
+    setup(function() {
+      resizable = fixture('ResizableAndShadowBoundaries');
+    });
 
-        suite('ancestor\'s iron-resize', function() {
-          test('only fires once for a notifying shadow descendent', function() {
-            var initialCount = resizable.ironResizeCount;
+    suite('ancestor\'s iron-resize', function() {
+      test('only fires once for a notifying shadow descendent', function() {
+        var initialCount = resizable.ironResizeCount;
 
-            resizable.$.childResizable1.notifyResize();
+        resizable.$.childResizable1.notifyResize();
 
-            expect(resizable.ironResizeCount - initialCount).to.be.equal(1);
-          });
+        expect(resizable.ironResizeCount - initialCount).to.be.equal(1);
+      });
 
-          test('only fires once when notifying descendent observables', function() {
-            var initialCount = resizable.ironResizeCount;
+      test('only fires once when notifying descendent observables', function() {
+        var initialCount = resizable.ironResizeCount;
 
-            resizable.notifyResize();
+        resizable.notifyResize();
 
-            expect(resizable.ironResizeCount - initialCount).to.be.equal(1);
-          });
-        });
-
-        suite('descendant\'s iron-resize', function() {
-          test('only fires once for a notifying shadow root', function() {
-            var childResizable1InitialCount =
-                resizable.$.childResizable1.ironResizeCount;
-            var childResizable2InitialCount =
-                resizable.$.childResizable2.ironResizeCount;
-
-            resizable.notifyResize();
-
-            expect(
-                resizable.$.childResizable1.ironResizeCount -
-                childResizable1InitialCount)
-                .to.be.equal(1);
-            expect(
-                resizable.$.childResizable2.ironResizeCount -
-                childResizable2InitialCount)
-                .to.be.equal(1);
-          });
-
-          test('only fires once for a notifying descendent observable', function() {
-            var initialCount = resizable.$.childResizable1.ironResizeCount;
-
-            resizable.$.childResizable1.notifyResize();
-
-            expect(resizable.$.childResizable1.ironResizeCount - initialCount)
-                .to.be.equal(1);
-          });
-        });
-
-        suite('window\'s resize', function() {
-          test('causes all iron-resize events to fire once', function() {
-            var rootInitialCount = resizable.ironResizeCount;
-            var childResizable1InitialCount =
-                resizable.$.childResizable1.ironResizeCount;
-            var childResizable2InitialCount =
-                resizable.$.childResizable2.ironResizeCount;
-
-            window.dispatchEvent(new CustomEvent('resize'));
-            Polymer.dom.flush();
-
-            expect(resizable.ironResizeCount - rootInitialCount).to.be.equal(1);
-            expect(
-                resizable.$.childResizable1.ironResizeCount -
-                childResizable1InitialCount)
-                .to.be.equal(1);
-            expect(
-                resizable.$.childResizable2.ironResizeCount -
-                childResizable2InitialCount)
-                .to.be.equal(1);
-          });
-        });
+        expect(resizable.ironResizeCount - initialCount).to.be.equal(1);
       });
     });
-  </script>
+
+    suite('descendant\'s iron-resize', function() {
+      test('only fires once for a notifying shadow root', function() {
+        var childResizable1InitialCount =
+            resizable.$.childResizable1.ironResizeCount;
+        var childResizable2InitialCount =
+            resizable.$.childResizable2.ironResizeCount;
+
+        resizable.notifyResize();
+
+        expect(
+            resizable.$.childResizable1.ironResizeCount -
+            childResizable1InitialCount)
+            .to.be.equal(1);
+        expect(
+            resizable.$.childResizable2.ironResizeCount -
+            childResizable2InitialCount)
+            .to.be.equal(1);
+      });
+
+      test('only fires once for a notifying descendent observable', function() {
+        var initialCount = resizable.$.childResizable1.ironResizeCount;
+
+        resizable.$.childResizable1.notifyResize();
+
+        expect(resizable.$.childResizable1.ironResizeCount - initialCount)
+            .to.be.equal(1);
+      });
+    });
+
+    suite('window\'s resize', function() {
+      test('causes all iron-resize events to fire once', function() {
+        var rootInitialCount = resizable.ironResizeCount;
+        var childResizable1InitialCount =
+            resizable.$.childResizable1.ironResizeCount;
+        var childResizable2InitialCount =
+            resizable.$.childResizable2.ironResizeCount;
+
+        window.dispatchEvent(new CustomEvent('resize'));
+        flush();
+
+        expect(resizable.ironResizeCount - rootInitialCount).to.be.equal(1);
+        expect(
+            resizable.$.childResizable1.ironResizeCount -
+            childResizable1InitialCount)
+            .to.be.equal(1);
+        expect(
+            resizable.$.childResizable2.ironResizeCount -
+            childResizable2InitialCount)
+            .to.be.equal(1);
+      });
+    });
+  });
+});
+</script>
 </body>
 </html>
