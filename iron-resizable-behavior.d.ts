@@ -62,6 +62,21 @@ declare namespace Polymer {
     stopResizeNotificationsFor(target: any): void;
 
     /**
+     * Subscribe this element to listen to iron-resize events on the given target.
+     *
+     * @param target Element to listen to for iron-resize events.
+     */
+    subscribeIronResize(target: HTMLElement|null): void;
+
+    /**
+     * Unsubscribe this element from listening to to iron-resize events on the
+     * given target.
+     *
+     * @param target Element to listen to for iron-resize events.
+     */
+    unsubscribeIronResize(target: HTMLElement|null): void;
+
+    /**
      * This method can be overridden to filter nested elements that should or
      * should not be notified by the current element. Return true if an element
      * should be notified, or false if it should not be notified.

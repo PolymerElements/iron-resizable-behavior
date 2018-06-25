@@ -139,8 +139,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      *
      * @param {HTMLElement} target Element to listen to for iron-resize events.
      */
-    unsubscribeIronResize: function(target){
-      target.removeEventListener('iron-resize', this._boundOnDescendantIronResize);
+    unsubscribeIronResize: function(target) {
+      target.removeEventListener(
+          'iron-resize', this._boundOnDescendantIronResize);
     },
 
     /**
