@@ -66,7 +66,7 @@ declare namespace Polymer {
      *
      * @param target Element to listen to for iron-resize events.
      */
-    subscribeIronResize(target: HTMLElement|null): void;
+    subscribeIronResize(target: HTMLElement): void;
 
     /**
      * Unsubscribe this element from listening to to iron-resize events on the
@@ -74,7 +74,7 @@ declare namespace Polymer {
      *
      * @param target Element to listen to for iron-resize events.
      */
-    unsubscribeIronResize(target: HTMLElement|null): void;
+    unsubscribeIronResize(target: HTMLElement): void;
 
     /**
      * This method can be overridden to filter nested elements that should or
