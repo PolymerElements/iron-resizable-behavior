@@ -64,6 +64,9 @@ declare namespace Polymer {
     /**
      * Subscribe this element to listen to iron-resize events on the given target.
      *
+     * Preferred over target.listen because the property renamer does not
+     * understand to rename when the target is not specifically "this"
+     *
      * @param target Element to listen to for iron-resize events.
      */
     _subscribeIronResize(target: HTMLElement): void;
@@ -71,6 +74,9 @@ declare namespace Polymer {
     /**
      * Unsubscribe this element from listening to to iron-resize events on the
      * given target.
+     *
+     * Preferred over target.unlisten because the property renamer does not
+     * understand to rename when the target is not specifically "this"
      *
      * @param target Element to listen to for iron-resize events.
      */
