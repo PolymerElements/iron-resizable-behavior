@@ -107,7 +107,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       if (parentResizable &&
           parentResizable._interestedResizables.indexOf(this) === -1) {
         parentResizable._interestedResizables.push(this);
-        parentResizable.subscribeIronResize(this);
+        parentResizable._subscribeIronResize(this);
       }
     },
 
@@ -120,7 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       if (index > -1) {
         this._interestedResizables.splice(index, 1);
-        this.unsubscribeIronResize(target);
+        this._unsubscribeIronResize(target);
       }
     },
 
@@ -129,7 +129,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      *
      * @param {!HTMLElement} target Element to listen to for iron-resize events.
      */
-    subscribeIronResize: function(target) {
+    _subscribeIronResize: function(target) {
       target.addEventListener('iron-resize', this._boundOnDescendantIronResize);
     },
 
@@ -139,7 +139,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      *
      * @param {!HTMLElement} target Element to listen to for iron-resize events.
      */
-    unsubscribeIronResize: function(target) {
+    _unsubscribeIronResize: function(target) {
       target.removeEventListener(
           'iron-resize', this._boundOnDescendantIronResize);
     },
