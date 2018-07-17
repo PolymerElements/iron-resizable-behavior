@@ -56,6 +56,7 @@ export const IronResizableBehavior = {
     // to be created before the `_parentResizable` observer fires:
     this._interestedResizables = [];
     this._boundNotifyResize = this.notifyResize.bind(this);
+    this._boundOnDescendantIronResize = this._onDescendantIronResize.bind(this);
   },
 
   attached: function() {
@@ -105,7 +106,7 @@ export const IronResizableBehavior = {
     if (parentResizable &&
         parentResizable._interestedResizables.indexOf(this) === -1) {
       parentResizable._interestedResizables.push(this);
-      parentResizable.listen(this, 'iron-resize', '_onDescendantIronResize');
+      parentResizable._subscribeIronResize(this);
     }
   },
 
@@ -118,8 +119,34 @@ export const IronResizableBehavior = {
 
     if (index > -1) {
       this._interestedResizables.splice(index, 1);
-      this.unlisten(target, 'iron-resize', '_onDescendantIronResize');
+      this._unsubscribeIronResize(target);
     }
+  },
+
+  /**
+   * Subscribe this element to listen to iron-resize events on the given target.
+   *
+   * Preferred over target.listen because the property renamer does not
+   * understand to rename when the target is not specifically "this"
+   *
+   * @param {!HTMLElement} target Element to listen to for iron-resize events.
+   */
+  _subscribeIronResize: function(target) {
+    target.addEventListener('iron-resize', this._boundOnDescendantIronResize);
+  },
+
+  /**
+   * Unsubscribe this element from listening to to iron-resize events on the
+   * given target.
+   *
+   * Preferred over target.unlisten because the property renamer does not
+   * understand to rename when the target is not specifically "this"
+   *
+   * @param {!HTMLElement} target Element to listen to for iron-resize events.
+   */
+  _unsubscribeIronResize: function(target) {
+    target.removeEventListener(
+        'iron-resize', this._boundOnDescendantIronResize);
   },
 
   /**
