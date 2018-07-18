@@ -1,16 +1,16 @@
 /**
 @license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+This code may only be used under the BSD style license found at
+http://polymer.github.io/LICENSE.txt The complete set of authors may be found at
+http://polymer.github.io/AUTHORS.txt The complete set of contributors may be
+found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
+part of the polymer project is also subject to an additional IP rights grant
+found at http://polymer.github.io/PATENTS.txt
 */
 import '@polymer/polymer/polymer-legacy.js';
 
-import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
-import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
+import {dom} from '@polymer/polymer/lib/legacy/polymer.dom.js';
 
 // Contains all connected resizables that do not have a parent.
 var ORPHANS = new Set();
@@ -38,13 +38,19 @@ export const IronResizableBehavior = {
     /**
      * The closest ancestor element that implements `IronResizableBehavior`.
      */
-    _parentResizable: {type: Object, observer: '_parentResizableChanged'},
+    _parentResizable: {
+      type: Object,
+      observer: '_parentResizableChanged',
+    },
 
     /**
      * True if this element is currently notifying its descendant elements of
      * resize.
      */
-    _notifyingDescendant: {type: Boolean, value: false}
+    _notifyingDescendant: {
+      type: Boolean,
+      value: false,
+    }
   },
 
   listeners: {
@@ -166,13 +172,6 @@ export const IronResizableBehavior = {
     if (this._notifyingDescendant) {
       event.stopPropagation();
       return;
-    }
-
-    // NOTE(cdata): In ShadowDOM, event retargeting makes echoing of the
-    // otherwise non-bubbling event "just work." We do it manually here for
-    // the case where Polymer is not using shadow roots for whatever reason:
-    if (!useShadow) {
-      this._fireResize();
     }
   },
 
