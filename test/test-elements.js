@@ -1,19 +1,22 @@
 /**
 @license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+This code may only be used under the BSD style license found at
+http://polymer.github.io/LICENSE.txt The complete set of authors may be found at
+http://polymer.github.io/AUTHORS.txt The complete set of contributors may be
+found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
+part of the polymer project is also subject to an additional IP rights grant
+found at http://polymer.github.io/PATENTS.txt
 */
-import { IronResizableBehavior } from '../iron-resizable-behavior.js';
-
 import './x-resizer-parent.js';
 import './x-resizable.js';
-import { Polymer as Polymer$0 } from '@polymer/polymer/lib/legacy/polymer-fn.js';
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-Polymer$0({
+
+import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import {html} from '@polymer/polymer/lib/utils/html-tag.js';
+
+import {IronResizableBehavior} from '../iron-resizable-behavior.js';
+
+Polymer({
 
   is: 'x-resizer-parent-filtered',
 
@@ -26,16 +29,16 @@ Polymer$0({
   }
 
 });
-Polymer$0({
+Polymer({
   _template: html`
     <div>
       <x-resizable id="resizable"></x-resizable>
     </div>
-`,
+  `,
 
   is: 'x-resizable-in-shadow'
 });
-Polymer$0({
+Polymer({
   _template: html`
     <!-- Normal resizable parent with child resizables -->
     <x-resizer-parent id="parent">
@@ -60,7 +63,7 @@ Polymer$0({
         <x-resizable-in-shadow id="shadow2d"></x-resizable-in-shadow>
       </div>
     </x-resizer-parent-filtered>
-`,
+  `,
 
   is: 'test-element'
 });
@@ -76,24 +79,22 @@ export const ObserveIronResizeBehavior = {
   }
 };
 
-Polymer$0({
+Polymer({
   _template: html`
     <div></div>
-`,
+  `,
 
   is: 'x-shadow-resizable',
 
-  behaviors:
-      [IronResizableBehavior, ObserveIronResizeBehavior]
+  behaviors: [IronResizableBehavior, ObserveIronResizeBehavior]
 });
-Polymer$0({
+Polymer({
   _template: html`
     <x-shadow-resizable id="childResizable1"></x-shadow-resizable>
     <x-shadow-resizable id="childResizable2"></x-shadow-resizable>
-`,
+  `,
 
   is: 'x-light-resizable',
 
-  behaviors:
-      [IronResizableBehavior, ObserveIronResizeBehavior]
+  behaviors: [IronResizableBehavior, ObserveIronResizeBehavior]
 });
