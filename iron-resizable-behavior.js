@@ -11,6 +11,7 @@ found at http://polymer.github.io/PATENTS.txt
 import '@polymer/polymer/polymer-legacy.js';
 
 import {dom} from '@polymer/polymer/lib/legacy/polymer.dom.js';
+import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
 
 // Contains all connected resizables that do not have a parent.
 var ORPHANS = new Set();
@@ -173,6 +174,11 @@ export const IronResizableBehavior = {
       event.stopPropagation();
       return;
     }
+
+    // no need to use this during shadow dom because of event retargeting
+    if (!useShadow) {
+      this._fireResize();
+    }
   },
 
   _fireResize: function() {
@@ -211,16 +217,10 @@ export const IronResizableBehavior = {
   },
 
   _requestResizeNotifications: function() {
-    if (!this.isAttached)
+    if (!this.isAttached) {
       return;
+    }
 
-    // NOTE(valdrin) In CustomElements v1 with native HTMLImports, the order
-    // of imports affects the order of `attached` callbacks (see
-    // webcomponents/custom-elements#15). This might cause a child to notify
-    // parents too early (as the parent still has to be upgraded), resulting in
-    // a parent not able to keep track of the `_interestedResizables`. To solve
-    // this, we wait for the document to be done loading before firing the
-    // event.
     if (document.readyState === 'loading') {
       var _requestResizeNotifications =
           this._requestResizeNotifications.bind(this);
