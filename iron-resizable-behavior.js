@@ -11,7 +11,7 @@ found at http://polymer.github.io/PATENTS.txt
 import '@polymer/polymer/polymer-legacy.js';
 
 import {dom} from '@polymer/polymer/lib/legacy/polymer.dom.js';
-import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
+import {useShadow} from '@polymer/polymer/lib/utils/settings.js';
 
 // Contains all connected resizables that do not have a parent.
 var ORPHANS = new Set();
