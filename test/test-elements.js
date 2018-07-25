@@ -70,7 +70,12 @@ Polymer({
 
 /** @polymerBehavior */
 export const ObserveIronResizeBehavior = {
-  properties: {ironResizeCount: {type: Number, value: 0}},
+  properties: {
+    ironResizeCount: {
+      type: Number,
+      value: 0,
+    },
+  },
 
   listeners: {'iron-resize': '_incrementIronResizeCount'},
 
