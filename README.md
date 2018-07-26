@@ -52,9 +52,16 @@ class SampleElement extends mixinBehaviors([IronResizableBehavior], PolymerEleme
     `;
   }
 
+  static get properties() {
+    return {
+      width: Number,
+      height: Number,
+    }
+  }
+
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('iron-resize', this.onIronResize);
+    this.addEventListener('iron-resize', this.onIronResize.bind(this));
   }
 
   onIronResize() {
