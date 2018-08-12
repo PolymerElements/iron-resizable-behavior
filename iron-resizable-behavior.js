@@ -31,7 +31,7 @@ var ORPHANS = new Set();
  *
  * Note, the `iron-resize` event is non-bubbling.
  *
- * @polymerBehavior Polymer.IronResizableBehavior
+ * @polymerBehavior
  * @demo demo/index.html
  **/
 export const IronResizableBehavior = {
