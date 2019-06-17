@@ -58,6 +58,7 @@ export const IronResizableBehavior = {
     'iron-request-resize-notifications': '_onIronRequestResizeNotifications'
   },
 
+  /** @override */
   created: function() {
     // We don't really need property effects on these, and also we want them
     // to be created before the `_parentResizable` observer fires:
@@ -66,10 +67,12 @@ export const IronResizableBehavior = {
     this._boundOnDescendantIronResize = this._onDescendantIronResize.bind(this);
   },
 
+  /** @override */
   attached: function() {
     this._requestResizeNotifications();
   },
 
+  /** @override */
   detached: function() {
     if (this._parentResizable) {
       this._parentResizable.stopResizeNotificationsFor(this);
